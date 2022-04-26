@@ -31,7 +31,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   late GoogleMapController newgoogleMapController;
 
   late Position currentPosition;
-  int _selectedIndex = 0;
+
   var geolocator = Geolocator();
 
   double bottempadding = 0.0;
@@ -80,7 +80,6 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-  //Containers Width
 
   //initial state to retrieve Logedin user Details
   User? user = FirebaseAuth.instance.currentUser;
@@ -98,12 +97,6 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
       setState(() {
         profilepic = loggedInUser.imagePath.toString();
       });
-    });
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
     });
   }
 

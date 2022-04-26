@@ -5,6 +5,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:labour_app_wg/Allscreens/HomeScreen.dart';
 import 'package:provider/provider.dart';
 import 'Allscreens/RegistrationScreen.dart';
 import 'Allscreens/loginscreen.dart';
@@ -31,11 +32,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color.fromARGB(255, 2, 15, 26),
         ),
-        initialRoute: mainscreen.idScreen,
+        initialRoute: HomeScreen.idScreen,
         routes: {
           RegisterationScreen.idScreen: (context) => RegisterationScreen(),
           Loginscreen.idScreen: (context) => Loginscreen(),
-          mainscreen.idScreen: (context) => mainscreen()
+          mainscreen.idScreen: (context) => mainscreen(),
+          HomeScreen.idScreen: (context) => HomeScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),
