@@ -217,6 +217,44 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
               });
             },
           ),
+          Container(
+            height: 120,
+            width: double.infinity,
+            color: Colors.black45,
+          ),
+          Positioned(
+            top: 30.0,
+            left: 60.0,
+            right: 0.0,
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: RaisedButton(
+                    onPressed: () {},
+                    color: Color.fromARGB(255, 23, 196, 46),
+                    textColor: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 45.0,
+                        width: 150.0,
+                        child: Text(
+                          "Go Online",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20.0, fontFamily: "Brand-Bold"),
+                        ),
+                      ),
+                    ),
+                    // ignore: unnecessary_new
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.0)),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
