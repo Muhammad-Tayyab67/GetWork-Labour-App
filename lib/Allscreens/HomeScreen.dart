@@ -76,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen>
         showUnselectedLabels: true,
         currentIndex: selectIndex,
         onTap: _onItemTapped,
-        elevation: 1,
       ),
     );
   }
