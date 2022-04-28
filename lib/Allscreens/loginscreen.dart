@@ -150,7 +150,7 @@ class Loginscreen extends StatelessWidget {
     try {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
+          .then((lid) => {
                 Fluttertoast.showToast(msg: "Login Successful"),
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => mainscreen())),

@@ -2,10 +2,12 @@
 //import 'package:firebas, e_auth/firebase_auth.dart';
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:labour_app_wg/Allscreens/HomeScreen.dart';
+import 'package:labour_app_wg/Config.dart';
 import 'package:provider/provider.dart';
 import 'Allscreens/RegistrationScreen.dart';
 import 'Allscreens/loginscreen.dart';
@@ -15,10 +17,16 @@ import 'Datahandler/appdata.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  User? firebaseuser = FirebaseAuth.instance.currentUser;
   runApp(const MyApp());
 }
 
 DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
+DatabaseReference reqRef = FirebaseDatabase.instance
+    .ref()
+    .child("labours")
+    .child(firebaseuser.uid)
+    .child("newReq");
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -32,9 +40,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color.fromARGB(255, 2, 15, 26),
         ),
-        initialRoute: HomeScreen.idScreen,
+        initialRoute: FirebaseAuth.instance.currentUser == null
+            ? Loginscreen.idScreen
+            : HomeScreen.idScreen,
         routes: {
-          RegisterationScreen.idScreen: (context) => RegisterationScreen(),
+          RegisterationScreen.idScreen: (context) => Loginscreen(),
           Loginscreen.idScreen: (context) => Loginscreen(),
           mainscreen.idScreen: (context) => mainscreen(),
           HomeScreen.idScreen: (context) => HomeScreen(),

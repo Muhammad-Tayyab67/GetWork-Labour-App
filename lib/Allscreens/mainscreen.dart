@@ -7,10 +7,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:labour_app_wg/Allscreens/RegistrationScreen.dart';
+import 'package:labour_app_wg/main.dart';
 
 import '../AllWidgets/progressDialog.dart';
 import '../Assitants/FetchingAddress.dart';
@@ -83,13 +85,14 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
 
   //initial state to retrieve Logedin user Details
   User? user = FirebaseAuth.instance.currentUser;
+
   UserModel loggedInUser = UserModel();
   String profilepic = "";
   @override
   void initState() {
     super.initState();
     FirebaseFirestore.instance
-        .collection("users")
+        .collection("labours")
         .doc(user!.uid)
         .get()
         .then((value) {
@@ -217,11 +220,6 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
               });
             },
           ),
-          Container(
-            height: 120,
-            width: double.infinity,
-            color: Colors.black45,
-          ),
           Positioned(
             top: 30.0,
             left: 60.0,
@@ -231,7 +229,9 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      GoOnline();
+                    },
                     color: Color.fromARGB(255, 23, 196, 46),
                     textColor: Colors.white,
                     child: Padding(
@@ -258,6 +258,13 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  void GoOnline() async {
+    Geofire.initialize("availableLabours");
+    Geofire.setLocation(loggedInUser.lid.toString(), currentPosition.latitude,
+        currentPosition.longitude);
+    reqRef.onValue.listen((event) {});
   }
 
   Future<void> logout(BuildContext context) async {
