@@ -17,16 +17,11 @@ import 'Datahandler/appdata.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  User? firebaseuser = FirebaseAuth.instance.currentUser;
+
   runApp(const MyApp());
 }
 
 DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
-DatabaseReference reqRef = FirebaseDatabase.instance
-    .ref()
-    .child("labours")
-    .child(firebaseuser.uid)
-    .child("newReq");
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -44,7 +39,7 @@ class MyApp extends StatelessWidget {
             ? Loginscreen.idScreen
             : HomeScreen.idScreen,
         routes: {
-          RegisterationScreen.idScreen: (context) => Loginscreen(),
+          RegisterationScreen.idScreen: (context) => RegisterationScreen(),
           Loginscreen.idScreen: (context) => Loginscreen(),
           mainscreen.idScreen: (context) => mainscreen(),
           HomeScreen.idScreen: (context) => HomeScreen(),
