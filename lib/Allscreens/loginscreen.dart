@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, prefer_const_constructors, unused_import, sized_box_for_whitespace
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
@@ -33,6 +34,7 @@ import 'package:flutter/material.dart'
         Widget,
         showDialog;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:labour_app_wg/DBconnection.dart';
 
 import '../AllWidgets/progressDialog.dart';
 import 'RegistrationScreen.dart';
@@ -151,9 +153,7 @@ class Loginscreen extends StatelessWidget {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((lid) => {
-                Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => mainscreen())),
+                DBconnecntion.logincheck(context),
               });
     } catch (er) {
       Fluttertoast.showToast(msg: er.toString());

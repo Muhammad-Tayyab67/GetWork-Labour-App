@@ -13,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:labour_app_wg/Allscreens/RegistrationScreen.dart';
+import 'package:labour_app_wg/Config.dart';
 import 'package:labour_app_wg/DBconnection.dart';
 import 'package:labour_app_wg/main.dart';
 
@@ -37,6 +38,10 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   late Position currentPosition;
 
   var geolocator = Geolocator();
+
+  String On_OffstatusText = "Go Online";
+  bool On_Offstatus = false;
+  Color On_Offstatuscolor = Colors.green;
 
   double bottempadding = 0.0;
 //Current location Function
@@ -231,9 +236,25 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: RaisedButton(
                     onPressed: () {
-                      GoOnline();
+                      if (On_Offstatus != true) {
+                        GoOnline();
+                        GetLiveLocationUpdate();
+                        setState(() {
+                          On_Offstatus = true;
+                          On_OffstatusText = "Offline Now";
+                          On_Offstatuscolor = Colors.black;
+                        });
+                        Fluttertoast.showToast(msg: "You are Online");
+                      } else {
+                        setState(() {
+                          makeoffline();
+                          On_Offstatus = false;
+                          On_OffstatusText = "Go Online";
+                          On_Offstatuscolor = Colors.green;
+                        });
+                      }
                     },
-                    color: Color.fromARGB(255, 23, 196, 46),
+                    color: On_Offstatuscolor,
                     textColor: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -241,7 +262,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                         height: 45.0,
                         width: 150.0,
                         child: Text(
-                          "Go Online",
+                          On_OffstatusText,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 20.0, fontFamily: "Brand-Bold"),
@@ -262,11 +283,39 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   }
 
   void GoOnline() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
     Geofire.initialize("availableLabours");
-    Geofire.setLocation(loggedInUser.lid.toString(), currentPosition.latitude,
-        currentPosition.longitude);
+
+    if (On_Offstatus == true) {
+      Geofire.setLocation(loggedInUser.lid.toString(), currentPosition.latitude,
+          currentPosition.longitude);
+    }
     DatabaseReference reqRef = DBconnecntion.connection();
     reqRef.onValue.listen((event) {});
+  }
+
+  void GetLiveLocationUpdate() {
+    StreamSubscription<Position> homeTabPageStreamSubscription;
+
+    homeTabPageStreamSubscription =
+        Geolocator.getPositionStream().listen((Position position) {
+      currentPosition = position;
+      Geofire.setLocation(
+          loggedInUser.lid.toString(), position.latitude, position.longitude);
+      LatLng latlong = LatLng(position.latitude, position.longitude);
+      newgoogleMapController.animateCamera(CameraUpdate.newLatLng(latlong));
+    });
+  }
+
+  void makeoffline() {
+    Geofire.removeLocation(loggedInUser.lid.toString());
+    DatabaseReference? reqref = DBconnecntion.connection();
+    reqref.onDisconnect();
+    reqref.remove();
+    reqref = null;
+    Fluttertoast.showToast(msg: "You are Offline");
   }
 
   Future<void> logout(BuildContext context) async {
