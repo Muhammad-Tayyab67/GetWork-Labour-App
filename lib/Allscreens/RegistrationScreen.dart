@@ -6,14 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../AllWidgets/progressDialog.dart';
+import 'package:labour_app_wg/DBconnection.dart';
 import '../Models/Users.dart';
 import 'loginscreen.dart';
 
 // ignore: must_be_immutable
 class RegisterationScreen extends StatelessWidget {
-  final _auth = FirebaseAuth.instance;
   static const String idScreen = "register";
   TextEditingController fnameTextEditingController = TextEditingController();
   TextEditingController lnameTextEditingController = TextEditingController();
@@ -32,7 +30,7 @@ class RegisterationScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
             Image.asset(
-              "images/sexylogo.jpeg",
+              "images/applogo.jpeg",
               alignment: Alignment.center,
               height: 200,
             ),
@@ -132,7 +130,8 @@ class RegisterationScreen extends StatelessWidget {
                         diplaymessage(
                             "Password should conatain more then 3 alphabets",
                             context);
-                      } else if (mobileTextEditingController.text.length < 3) {
+                      } else if (mobileTextEditingController.text.length !=
+                          11) {
                         diplaymessage(
                             "Mobile Must conatain more then 11 Digits",
                             context);
@@ -146,7 +145,7 @@ class RegisterationScreen extends StatelessWidget {
                             "Email should conatain more then @gmail.. alphabets",
                             context);
                       } else {
-                        signUp(emailTextEditingController.text,
+                        DBconnecntion().signUp(emailTextEditingController.text,
                             passTextEditingController.text, context);
                       }
                     },
@@ -185,48 +184,30 @@ class RegisterationScreen extends StatelessWidget {
     );
   }
 
-  void signUp(String email, String password, BuildContext context) async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return ProgressDialog(
-            message: "Please Wait . . . .",
-          );
-        });
-
-    await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) => {postDetailsToFirestore(context)})
-        .catchError((e) {
-      diplaymessage(e.toString(), context);
-    });
-  }
-
-  postDetailsToFirestore(BuildContext context) async {
+  void postDetailsToFirestore(BuildContext context, FirebaseAuth auth) async {
     // calling our firestore
     // calling our user model
     // sedning these values
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? labours = _auth.currentUser;
+    User? labours = auth.currentUser;
 
     // writing all the values
-    UserModel userModel = UserModel();
-    userModel.email = labours!.email;
-    userModel.lid = labours.uid;
-    userModel.firstName = fnameTextEditingController.text;
-    userModel.lastName = lnameTextEditingController.text;
-    userModel.cityName = cityTextEditingController.text;
-    userModel.cnic = cnicTextEditingController.text;
-    userModel.mobileNo = mobileTextEditingController.text;
-    userModel.password = passTextEditingController.text;
-    userModel.imagePath = "";
+    UserModel labourModel = UserModel();
+    labourModel.email = labours!.email;
+    labourModel.lid = labours.uid;
+    labourModel.firstName = fnameTextEditingController.text;
+    labourModel.lastName = lnameTextEditingController.text;
+    labourModel.cityName = cityTextEditingController.text;
+    labourModel.cnic = cnicTextEditingController.text;
+    labourModel.mobileNo = mobileTextEditingController.text;
+    labourModel.password = passTextEditingController.text;
+    labourModel.imagePath = "";
 
     await firebaseFirestore
         .collection("labours")
         .doc(labours.uid)
-        .set(userModel.toMap());
+        .set(labourModel.toMap());
     Fluttertoast.showToast(msg: "Account created successfully :) ");
 
     Navigator.pushNamedAndRemoveUntil(

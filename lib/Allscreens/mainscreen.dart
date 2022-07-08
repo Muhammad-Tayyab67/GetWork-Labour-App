@@ -13,10 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:labour_app_wg/Allscreens/RegistrationScreen.dart';
-import 'package:labour_app_wg/Config.dart';
 import 'package:labour_app_wg/DBconnection.dart';
-import 'package:labour_app_wg/main.dart';
-
 import '../AllWidgets/progressDialog.dart';
 import '../Assitants/FetchingAddress.dart';
 import '../Models/Users.dart';
@@ -292,7 +289,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
       Geofire.setLocation(loggedInUser.lid.toString(), currentPosition.latitude,
           currentPosition.longitude);
     }
-    DatabaseReference reqRef = DBconnecntion.connection();
+    DatabaseReference reqRef = DBconnecntion.GeoFireRefconnection();
     reqRef.onValue.listen((event) {});
   }
 
@@ -311,7 +308,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
 
   void makeoffline() {
     Geofire.removeLocation(loggedInUser.lid.toString());
-    DatabaseReference? reqref = DBconnecntion.connection();
+    DatabaseReference? reqref = DBconnecntion.GeoFireRefconnection();
     reqref.onDisconnect();
     reqref.remove();
     reqref = null;

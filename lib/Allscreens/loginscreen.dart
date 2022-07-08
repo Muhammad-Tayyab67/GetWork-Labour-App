@@ -44,7 +44,6 @@ class Loginscreen extends StatelessWidget {
   static const String idScreen = "login";
 
   Loginscreen({Key? key}) : super(key: key);
-  final _auth = FirebaseAuth.instance;
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController passTextEditingController = TextEditingController();
 
@@ -57,7 +56,7 @@ class Loginscreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
             Image.asset(
-              "images/sexylogo.jpeg",
+              "images/applogo.jpeg",
               alignment: Alignment.center,
               height: 200,
             ),
@@ -100,7 +99,7 @@ class Loginscreen extends StatelessWidget {
                       } else if (passTextEditingController.text.length < 3) {
                         Fluttertoast.showToast(msg: "Incorrect Password.");
                       } else {
-                        signin(emailTextEditingController.text,
+                        DBconnecntion().signin(emailTextEditingController.text,
                             passTextEditingController.text, context);
                       }
                     },
@@ -138,27 +137,5 @@ class Loginscreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void signin(String email, String password, BuildContext context) async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return ProgressDialog(
-            message: "Loging in.. Please Wait . . . .",
-          );
-        });
-    try {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((lid) => {
-                DBconnecntion.logincheck(context),
-              });
-    } catch (er) {
-      Fluttertoast.showToast(msg: er.toString());
-      Navigator.pop(context);
-      print(er);
-    }
   }
 }

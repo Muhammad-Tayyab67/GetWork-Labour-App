@@ -3,8 +3,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -60,6 +58,12 @@ class _ProfilePageState extends State<ProfilePage>
         .child("post_$imgId");
     await reference.putFile(img);
     widget.edituser.imagePath = await reference.getDownloadURL();
+    await firebaseFirestore
+        .collection("labours")
+        .doc(widget.edituser.lid)
+        .update(
+          widget.edituser.toMap(),
+        );
   }
 
   Future UpdateDATA() async {
@@ -76,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage>
       widget.edituser.email = emailupdateController.text;
       widget.edituser.mobileNo = mobileupdateController.text;
       await firebaseFirestore
-          .collection("users")
+          .collection("labours")
           .doc(widget.edituser.lid)
           .update(
             widget.edituser.toMap(),
